@@ -3,60 +3,121 @@ package com.ybao.library.converter;
 import android.support.annotation.NonNull;
 
 import com.facebook.rebound.Spring;
+import com.ybao.library.performer.Performer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Y-bao on 2016/11/4.
  */
 
 public abstract class Converter {
+    List<Performer> mPerformers;
 
     protected boolean mFollow = true;
 
-    @NonNull
     protected Spring mSpring;
 
     protected double mRestValue;
 
-    protected Converter(final double restValue, final boolean isFollow) {
-        this(null, restValue, isFollow);
+
+    public Converter() {
+        this(null, null, 0, true);
     }
 
-    protected Converter(@NonNull final Spring spring) {
-        this(spring, true);
+    public Converter(double restValue, boolean isFollow) {
+        this(null, null, restValue, isFollow);
     }
 
-    protected Converter(@NonNull final Spring spring, final boolean isFollow) {
-        this(spring, spring.getEndValue(), isFollow);
+    public Converter(@NonNull Spring spring) {
+        this(spring, null, true);
     }
 
-    protected Converter(@NonNull final Spring spring, final double restValue, final boolean isFollow) {
+    public Converter(@NonNull Spring spring, Performer[] performers) {
+        this(spring, performers, true);
+    }
+
+    public Converter(@NonNull Spring spring, Performer[] performers, boolean isFollow) {
+        this(spring, performers, spring.getEndValue(), isFollow);
+    }
+
+    public Converter(@NonNull Spring spring, Performer[] performers, double restValue, boolean isFollow) {
         mSpring = spring;
         mRestValue = restValue;
         mFollow = isFollow;
+        addAllListeners(performers);
     }
 
-    protected abstract double mapToSpring(final float motionValue);
+    private void addAllListeners(Performer[] performers) {
+        if (mSpring == null || performers == null) {
+            return;
+        }
+        mPerformers = new ArrayList<>();
+        for (Performer performer : performers) {
+            mSpring.addListener(performer);
+            mPerformers.add(performer);
+        }
+    }
+
+    private void addAllListeners(List<Performer> performers) {
+        if (mSpring == null || performers == null) {
+            return;
+        }
+        mPerformers = new ArrayList<>();
+        for (Performer performer : performers) {
+            mSpring.addListener(performer);
+            mPerformers.add(performer);
+        }
+    }
+
+    protected abstract double mapToSpring(float motionValue);
 
     public boolean isFollow() {
         return mFollow;
     }
 
-    @NonNull
-    public void setFollow(boolean isFollow) {
+    public Converter setFollow(boolean isFollow) {
         this.mFollow = isFollow;
+        return this;
     }
 
-    @NonNull
+    public Converter setRestValue(double mRestValue) {
+        this.mRestValue = mRestValue;
+        return this;
+    }
+
+    public double getRestValue() {
+        return mRestValue;
+    }
+
     public Spring getSpring() {
         return mSpring;
     }
 
-    public void setSpring(@NonNull final Spring spring) {
-        mSpring = spring;
+    public boolean hasSpring() {
+        return mSpring != null;
+    }
 
+    public Converter setSpring(@NonNull final Spring spring) {
+        mSpring = spring;
         if (mSpring != null) {
             // Start spring at rest.
+            addAllListeners(mPerformers);
             mSpring.setCurrentValue(mRestValue, true);
         }
+        return this;
     }
+
+    public Converter addPerformer(@NonNull Performer performer) {
+        if (mPerformers == null) {
+            mPerformers = new ArrayList<>();
+        }
+        mPerformers.add(performer);
+        if (mSpring != null) {
+            mSpring.addListener(performer);
+        }
+        return this;
+    }
+
 }
