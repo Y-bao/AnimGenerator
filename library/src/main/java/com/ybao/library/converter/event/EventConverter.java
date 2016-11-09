@@ -15,7 +15,6 @@ import com.ybao.library.performer.Performer;
 
 public abstract class EventConverter extends Converter {
     MotionProperty mProperty;
-    protected float mOffset;
 
     public EventConverter(@NonNull final MotionProperty property) {
         this(null, null, property, 0, true);

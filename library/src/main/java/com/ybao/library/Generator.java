@@ -11,7 +11,9 @@ import com.ybao.library.converter.event.EventConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Created by Y-bao on 2016/11/8.
+ */
 public class Generator {
     List<EventConverter> converters;
     MotionListener motionListener;

@@ -50,7 +50,7 @@ public class MoveConverter extends EventConverter {
         if (mSpring != null && isFollow()) {
             mSpring.setVelocity(0);
         }
-        mDownPosition = mProperty.getValue(event) + mOffset;
+        mDownPosition = mProperty.getValue(event);
     }
 
     public void mime(float offset, final float value, final float delta, final float dt, final MotionEvent event) {
@@ -77,14 +77,13 @@ public class MoveConverter extends EventConverter {
     public void convert(View view, @NonNull MotionEvent event) {
         final float viewValue = mProperty.getValue(view);
         final float eventValue = mProperty.getValue(event);
-        mOffset = mProperty.getOffset(view);
 
         if (event.getHistorySize() > 0) {
             final float historicalValue = mProperty.getOldestValue(event);
 
-            convert(viewValue + mOffset, eventValue, eventValue - historicalValue, event);
+            convert(viewValue, eventValue, eventValue - historicalValue, event);
         } else {
-            convert(viewValue + mOffset, eventValue, 0, event);
+            convert(viewValue, eventValue, 0, event);
         }
     }
 
