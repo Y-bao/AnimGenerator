@@ -1,12 +1,14 @@
 package com.ybao.library.converter.event;
 
 import android.support.annotation.NonNull;
+import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.facebook.rebound.Spring;
 import com.ybao.library.MotionProperty;
 import com.ybao.library.converter.Converter;
+import com.ybao.library.performer.MapPerformer;
 import com.ybao.library.performer.Performer;
 
 /**
@@ -33,7 +35,7 @@ public abstract class EventConverter extends Converter {
     }
 
     public EventConverter(Spring spring, Performer[] performers, @NonNull final MotionProperty property, boolean isFollow) {
-        this(spring, performers, property, spring.getEndValue(), isFollow);
+        this(spring, performers, property, 0, isFollow);
     }
 
     public EventConverter(Spring spring, Performer[] performers, @NonNull final MotionProperty property, double restValue, boolean isFollow) {
@@ -67,8 +69,33 @@ public abstract class EventConverter extends Converter {
         return this;
     }
 
-    public EventConverter addPerformer(View view) {
-        Performer performer = new Performer(view, mProperty.getViewProperty());
+    public EventConverter addPerformer(@NonNull View target) {
+        Performer performer = new Performer(target, mProperty.getViewProperty());
+        return addPerformer(performer);
+    }
+
+    public EventConverter addPerformer(@NonNull View target, @NonNull final Property<View, Float> property) {
+        Performer performer = new Performer(target, property);
+        return addPerformer(performer);
+    }
+
+    public EventConverter addMapPerformer(@NonNull final View target) {
+        MapPerformer performer = new MapPerformer(target, mProperty.getViewProperty());
+        return addPerformer(performer);
+    }
+
+    public EventConverter addMapPerformer(@NonNull final View target, @NonNull final Property<View, Float> property) {
+        MapPerformer performer = new MapPerformer(target, property);
+        return addPerformer(performer);
+    }
+
+    public EventConverter addMapPerformer(@NonNull final View target, final float initialStart, final float initialEnd, final float start, final float end) {
+        MapPerformer performer = new MapPerformer(target, mProperty.getViewProperty(), initialStart, initialEnd, start, end);
+        return addPerformer(performer);
+    }
+
+    public EventConverter addMapPerformer(@NonNull final View target, @NonNull final Property<View, Float> property, final float initialStart, final float initialEnd, final float start, final float end) {
+        MapPerformer performer = new MapPerformer(target, property, initialStart, initialEnd, start, end);
         return addPerformer(performer);
     }
 }

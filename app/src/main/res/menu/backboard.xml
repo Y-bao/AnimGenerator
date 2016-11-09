@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.tumblr.backboard.example.BackboardActivity">
+
+    <item
+        android:id="@+id/action_move"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Move" />
+
+    <item
+        android:id="@+id/action_move_flower"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="MoveFlower" />
+
+    <item
+        android:id="@+id/action_press"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Press" />
+
+    <item
+        android:id="@+id/action_press_flower"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="PressFlower" />
+    <item
+        android:id="@+id/follow"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="follow" />
+
+</menu>

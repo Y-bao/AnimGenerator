@@ -14,7 +14,7 @@ import com.ybao.library.performer.Performer;
  */
 
 public class MoveConverter extends EventConverter {
-    protected float mDownPosition;
+    protected float[] mDownPosition;
 
     public MoveConverter(@NonNull MotionProperty property) {
         super(property);
@@ -46,63 +46,45 @@ public class MoveConverter extends EventConverter {
     }
 
 
-    public void constrain(final MotionEvent event) {
-        if (mSpring != null && isFollow()) {
-            mSpring.setVelocity(0);
-        }
-        mDownPosition = mProperty.getValue(event);
+    public void constrain(View view, MotionEvent event) {
+        super.constrain(view, event);
+        mDownPosition = new float[]{event.getX(), event.getY()};
     }
 
-    public void mime(float offset, final float value, final float delta, final float dt, final MotionEvent event) {
+    @Override
+    public void release(View view, MotionEvent event) {
+        if (event.getHistorySize() > 0) {
+            float v = (mProperty.getDistance(view, event, mDownPosition) - mProperty.getHistoricalDistance(view, event, mDownPosition)) / (event.getEventTime() - event.getHistoricalEventTime(0));
+            mSpring.setVelocity(Math.min(v, 500));
+        }
+        super.release(view, event);
+
+    }
+
+    public void mime(View view, final MotionEvent event) {
         if (mSpring != null) {
-            mSpring.setEndValue(mapToSpring(offset + value - mDownPosition));
+            final float eventValue = mProperty.getDistance(view, event, mDownPosition);
+            mSpring.setEndValue(mapToSpring(eventValue));
 
             if (isFollow()) {
                 mSpring.setCurrentValue(mSpring.getEndValue());
-
-                if (dt > 0) {
-                    mSpring.setVelocity(delta / dt);
-                }
             }
-        }
-    }
-
-    public void release(final MotionEvent event) {
-        if (mSpring != null) {
-            mSpring.setEndValue(mRestValue);
         }
     }
 
     @Override
     public void convert(View view, @NonNull MotionEvent event) {
-        final float viewValue = mProperty.getValue(view);
-        final float eventValue = mProperty.getValue(event);
-
-        if (event.getHistorySize() > 0) {
-            final float historicalValue = mProperty.getOldestValue(event);
-
-            convert(viewValue, eventValue, eventValue - historicalValue, event);
-        } else {
-            convert(viewValue, eventValue, 0, event);
-        }
-    }
-
-    public void convert(final float offset, final float value, final float delta, @Nullable final MotionEvent event) {
         if (event != null) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    constrain(event);
+                    constrain(view,event);
+                    break;
                 case MotionEvent.ACTION_MOVE:
-                    if (event.getHistorySize() > 0) {
-                        mime(offset, value, delta, event.getEventTime() - event.getHistoricalEventTime(0), event);
-                    } else {
-                        mime(offset, value, delta, 0, event);
-                    }
-
+                    mime(view, event);
                     break;
                 default:
                 case MotionEvent.ACTION_UP:
-                    release(event);
+                    release(view,event);
                     break;
             }
         }

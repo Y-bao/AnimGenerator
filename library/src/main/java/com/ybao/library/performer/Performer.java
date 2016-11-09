@@ -15,61 +15,61 @@ import com.facebook.rebound.SpringListener;
 
 public class Performer implements SpringListener {
 
-	
-	@Nullable
-	protected View mTarget;
-	
-	@NonNull
-	protected Property<View, Float> mProperty;
 
-	
-	public Performer(@NonNull final Property<View, Float> property) {
-		this(null, property);
-	}
+    @Nullable
+    protected View mTarget;
 
-	
-	public Performer(@Nullable final View target, @NonNull final Property<View, Float> property) {
-		this.mTarget = target;
-		this.mProperty = property;
-	}
+    @NonNull
+    protected Property<View, Float> mProperty;
 
-	@Nullable
-	public View getTarget() {
-		return mTarget;
-	}
 
-	public void setTarget(@Nullable final View target) {
-		this.mTarget = target;
-	}
+    public Performer(@NonNull final Property<View, Float> property) {
+        this(null, property);
+    }
 
-	@NonNull
-	public Property getProperty() {
-		return mProperty;
-	}
 
-	public void setProperty(@NonNull final Property<View, Float> property) {
-		this.mProperty = property;
-	}
+    public Performer(@Nullable final View target, @NonNull final Property<View, Float> property) {
+        this.mTarget = target;
+        this.mProperty = property;
+    }
 
-	@Override
-	public void onSpringUpdate(@NonNull final Spring spring) {
-		if (mProperty != null && mTarget != null) {
-			mProperty.set(mTarget, (float) spring.getCurrentValue());
-		}
-	}
+    @Nullable
+    public View getTarget() {
+        return mTarget;
+    }
 
-	@Override
-	public void onSpringAtRest(final Spring spring) {
+    public void setTarget(@Nullable final View target) {
+        this.mTarget = target;
+    }
 
-	}
+    @NonNull
+    public Property getProperty() {
+        return mProperty;
+    }
 
-	@Override
-	public void onSpringActivate(final Spring spring) {
+    public void setProperty(@NonNull final Property<View, Float> property) {
+        this.mProperty = property;
+    }
 
-	}
+    @Override
+    public void onSpringUpdate(@NonNull final Spring spring) {
+        if (mProperty != null && mTarget != null) {
+            mProperty.set(mTarget, (float) spring.getCurrentValue());
+        }
+    }
 
-	@Override
-	public void onSpringEndStateChange(final Spring spring) {
+    @Override
+    public void onSpringAtRest(final Spring spring) {
 
-	}
+    }
+
+    @Override
+    public void onSpringActivate(final Spring spring) {
+
+    }
+
+    @Override
+    public void onSpringEndStateChange(final Spring spring) {
+
+    }
 }

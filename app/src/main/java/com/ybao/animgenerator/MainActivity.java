@@ -2,31 +2,75 @@ package com.ybao.animgenerator;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import com.facebook.rebound.SpringSystem;
-import com.ybao.library.Generator;
-import com.ybao.library.MotionProperty;
-import com.ybao.library.converter.event.MoveConverter;
-import com.ybao.library.performer.MapPerformer;
-
+/**
+ * Created by Y-bao on 2016/11/8.
+ */
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        View view = findViewById(R.id.circle);
 
-        double arc = 2 * Math.PI / 6;
-        view.setOnTouchListener(new Generator.Builder(SpringSystem.create())
-                .addConverter(new MoveConverter(MotionProperty.X).addPerformer(view))
-                .addConverter(new MoveConverter(MotionProperty.Y).addPerformer(view))
-                .build().getMotionListener());
-//        view.setOnTouchListener(new Generator.Builder(SpringSystem.create())
-//                .addConverter(new MoveConverter(MotionProperty.X).addPerformer(new MapPerformer(view, View.TRANSLATION_X, 0, 1, 0, (float) Math.cos(2 * arc))))
-//                .addConverter(new MoveConverter(MotionProperty.Y).addPerformer(new MapPerformer(view, View.TRANSLATION_Y, 0, 1, 0, -(float) Math.sin(2 * arc))))
-//                .build().getMotionListener());
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new MoveFragment())
+                    .commit();
+            setTitle("Move");
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.backboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_move:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new MoveFragment())
+                        .commit();
+                setTitle("Move");
+                return true;
+
+            case R.id.action_move_flower:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new MoveFlowerFragment())
+                        .commit();
+                setTitle("MoveFlower");
+                return true;
+
+            case R.id.action_press:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new PressFragment())
+                        .commit();
+                setTitle("Press");
+                return true;
+
+            case R.id.action_press_flower:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new PressFlowerFragment())
+                        .commit();
+                setTitle("PressFlower");
+                return true;
+
+            case R.id.follow:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new FollowFragment())
+                        .commit();
+                setTitle("Follow");
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

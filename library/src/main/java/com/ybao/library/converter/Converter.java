@@ -1,6 +1,8 @@
 package com.ybao.library.converter;
 
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.facebook.rebound.Spring;
 import com.ybao.library.performer.Performer;
@@ -39,7 +41,7 @@ public abstract class Converter {
     }
 
     public Converter(@NonNull Spring spring, Performer[] performers, boolean isFollow) {
-        this(spring, performers, spring.getEndValue(), isFollow);
+        this(spring, performers, 0, isFollow);
     }
 
     public Converter(@NonNull Spring spring, Performer[] performers, double restValue, boolean isFollow) {
@@ -47,6 +49,18 @@ public abstract class Converter {
         mRestValue = restValue;
         mFollow = isFollow;
         addAllListeners(performers);
+    }
+
+    public void constrain(View view, MotionEvent event) {
+        if (mSpring != null && isFollow()) {
+            mSpring.setVelocity(0);
+        }
+    }
+
+    public void release(View view, MotionEvent event) {
+        if (mSpring != null) {
+            mSpring.setEndValue(mRestValue);
+        }
     }
 
     private void addAllListeners(Performer[] performers) {
